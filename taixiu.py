@@ -1,5 +1,4 @@
 import requests
-import time
 
 def get_latest_data():
     url = "https://taixiu1.gsum01.com/api/luckydice1/GetSoiCau"
@@ -12,7 +11,8 @@ def get_latest_data():
         response.raise_for_status()
         data = response.json()
         return data
-    except:
+    except Exception as e:
+        print(f"Lỗi khi lấy dữ liệu: {e}")
         return None
 
 def parse_results(data):
@@ -41,10 +41,9 @@ def predict_next(results):
         xiu_count = results[-10:].count("Xỉu")
         return "Tài" if tai_count > xiu_count else "Xỉu"
 
-def main_loop():
+def main():
     data = get_latest_data()
     if not data:
-        print("Không lấy được dữ liệu.")
         return
 
     data.reverse()
@@ -58,4 +57,4 @@ def main_loop():
     print(f"Kết quả mới: {current} | Dự đoán tiếp theo: {prediction}")
 
 if __name__ == "__main__":
-    main_loop()
+    main()
