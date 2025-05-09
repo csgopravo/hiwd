@@ -41,27 +41,21 @@ def predict_next(results):
         xiu_count = results[-10:].count("Xỉu")
         return "Tài" if tai_count > xiu_count else "Xỉu"
 
-def main_loop(interval=5):
-    last_result = None
+def main_loop():
+    data = get_latest_data()
+    if not data:
+        print("Không lấy được dữ liệu.")
+        return
 
-    while True:
-        data = get_latest_data()
-        if not data:
-            time.sleep(interval)
-            continue
+    data.reverse()
+    results = parse_results(data)
+    if not results:
+        print("Không có kết quả hợp lệ.")
+        return
 
-        data.reverse()
-        results = parse_results(data)
-        if not results:
-            time.sleep(interval)
-            continue
-
-        current = results[-1]
-        if current != last_result:
-            print(f"Kết quả mới: {current} | Dự đoán tiếp theo: {predict_next(results)}")
-            last_result = current
-
-        time.sleep(interval)
+    current = results[-1]
+    prediction = predict_next(results)
+    print(f"Kết quả mới: {current} | Dự đoán tiếp theo: {prediction}")
 
 if __name__ == "__main__":
     main_loop()
